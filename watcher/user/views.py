@@ -135,10 +135,13 @@ class UserUpdateView(UpdateView):
     model = User
     form_class = UserUpdateForm
     template_name = "user/profile_update.html"
-    success_url = "/profile/"
 
     def get_object(self):
         return self.request.user
+
+    def get_success_url(self):
+        messages.add_message(self.request, messages.INFO, 'changes saved')
+        return reverse('account')
 
     def dispatch(self, request, *args, **kwargs):
         # Check if the user is logged in
