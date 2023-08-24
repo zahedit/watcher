@@ -11,3 +11,5 @@ DB = {
     'HOST' : 'localhost',
     'PORT' : '5432',
 }
+
+EMAIL_PASSWORD = 'old_snake1993'

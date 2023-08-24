@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.base_user import AbstractBaseUser
-from django.contrib.auth.models import AbstractUser, UserManager, PermissionsMixin
+from django.contrib.auth.models import UserManager, PermissionsMixin
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
@@ -20,7 +20,8 @@ class User(AbstractBaseUser, PermissionsMixin):
             "unique": _("A user with that username already exists."),
         },
     )
-    email = models.EmailField(_("email address"), blank=True)
+    email = models.EmailField(_("email address"), blank=False, null=False)
+    nickname= models.CharField(_("nick name"), max_length=150, blank=True)
     phone_number= models.CharField(_('phone number'), blank=True, max_length=11)
     avatar=models.ImageField(upload_to='users/avatar/', blank=True)
     bio=models.TextField(_("bio"), blank=True)
@@ -34,7 +35,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
     is_active = models.BooleanField(
         _("active"),
-        default=True,
+        default=False,
         help_text=_(
             "Designates whether this user should be treated as active. "
             "Unselect this instead of deleting accounts."
