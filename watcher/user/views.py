@@ -136,6 +136,13 @@ class UserUpdateView(UpdateView):
     form_class = UserUpdateForm
     template_name = "user/profile_update.html"
 
+    def get_form_kwargs(self):
+        # Get the default form kwargs
+        kwargs = super().get_form_kwargs()
+        # Add the current user as the user parameter
+        kwargs["user"] = self.request.user
+        return kwargs
+
     def get_object(self):
         return self.request.user
 
@@ -151,10 +158,3 @@ class UserUpdateView(UpdateView):
         else:
             # If no, redirect to the login page
             return redirect('auth-login')
-
-    def get_form_kwargs(self):
-        # Get the default form kwargs
-        kwargs = super().get_form_kwargs()
-        # Add the current user as the user parameter
-        kwargs["user"] = self.request.user
-        return kwargs

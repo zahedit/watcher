@@ -1,5 +1,5 @@
 from django.urls import path, re_path
-from .views import RegisterView, LoginView, logout_view, activate, ProfileView
+from .views import RegisterView, LoginView, logout_view, activate
 from django.contrib.auth.views import LogoutView
 from . import views
 
