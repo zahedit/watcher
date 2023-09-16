@@ -1,0 +1,9 @@
+
+{% block content %}
+<h1>Search Games</h1>
+<form action="{% url 'result' %}" method="get">
+    <label for="q">Enter the name of a game:</label>
+    <input type="text" id="q" name="q" required>
+    <button type="submit">Search</button>
+</form>
+{% endblock %}
