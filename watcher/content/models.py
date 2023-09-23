@@ -19,7 +19,7 @@ class Game(models.Model):
 class UserGame(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
-    rating = models.IntegerField(choices=[(i, i) for i in range(1, 6)])
+    rating = models.IntegerField(choices=[(i, i) for i in range(1, 6)], null=True) 
     review = models.TextField(blank=True)
 
     def __str__(self):
@@ -41,7 +41,7 @@ class Movie(models.Model):
 class UserMovie(models.Model): 
     user = models.ForeignKey(User, on_delete=models.CASCADE) 
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE) 
-    rating = models.IntegerField(choices=[(i, i) for i in range(1, 6)]) 
+    rating = models.IntegerField(choices=[(i, i) for i in range(1, 6)], null=True) 
     review = models.TextField(blank=True)
 
     def __str__(self):
@@ -63,7 +63,7 @@ class TVShow(models.Model):
 class UserTVShow(models.Model): 
     user = models.ForeignKey(User, on_delete=models.CASCADE) 
     tvshow = models.ForeignKey(TVShow, on_delete=models.CASCADE) 
-    rating = models.IntegerField(choices=[(i, i) for i in range(1, 6)]) 
+    rating = models.IntegerField(choices=[(i, i) for i in range(1, 6)], null=True) 
     review = models.TextField(blank=True)
 
     def __str__(self):
