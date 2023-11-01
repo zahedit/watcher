@@ -95,3 +95,4 @@ class UserUpdateForm(UserChangeForm):
         if User.objects.filter(email=email).exclude(pk=self.instance.pk).exists():
             raise forms.ValidationError("A user with that email already exists.")
         return email
+#############################################

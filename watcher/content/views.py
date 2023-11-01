@@ -2,7 +2,7 @@ import requests
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
-from .models import Game, Movie, TVShow, UserTVShow, UserMovie
+from .models import Game, Movie, TVShow, UserTVShow, UserMovie, UserGame
 
 from django.contrib.auth.decorators import login_required
 
@@ -26,6 +26,8 @@ def search_movies(request):
     if response.status_code == 200:
         data = response.json()
         results = data["results"]
+        for result in results:
+            result['is_following'] = UserMovie.objects.filter(user=request.user, movie__id=result['id']).exists()
         return render(request, "content/search_results_movie.html", {"results": results})
     else:
         return HttpResponse("Error: " + str(response.status_code))
@@ -45,6 +47,7 @@ def add_movie(request): # get the movie details from the api using the movie id
     if not movie:
         # create a new movie object and save it to the database
         movie = Movie(
+            id = result["id"],
             title=result["title"],
             genre=", ".join([g["name"] for g in result["genres"]]),
             director=", ".join([d["name"] for d in result_credits["crew"] if d["job"] == "Director"]),
@@ -79,6 +82,8 @@ def search_tv(request):
     if response.status_code == 200:
         data = response.json()
         results = data["results"]
+        for result in results:
+            result['is_following'] = UserTVShow.objects.filter(user=request.user, tvshow__id=result['id']).exists()
         return render(request, "content/search_results_tv.html", {"results": results})
     else:
         return HttpResponse("Error: " + str(response.status_code))
@@ -95,6 +100,7 @@ def add_tv(request): # get the movie details from the api using the movie id
     if not tvShow:
         # create a new movie object and save it to the database
         tvShow = TVShow(
+            id = result["id"],
             title = result["name"],
             genre=", ".join([g["name"] for g in result["genres"]]),
             start_date = result["first_air_date"],
@@ -106,7 +112,6 @@ def add_tv(request): # get the movie details from the api using the movie id
         )
         tvShow.save()
     tvshow_user_searched = TVShow.objects.get(title=result["name"])
-    
     qs = UserTVShow.objects.filter(user=request.user, tvshow= tvshow_user_searched)
     if qs.exists():
         qs.delete()
@@ -118,7 +123,7 @@ api_key_game = "ea0afd24e6f34b8f84a0802b8585d42d"
 base_url_game = "https://api.rawg.io/api/games"
 
 def search_games(request):
-    query = request.GET.get("q", "")
+    query = request.GET.get("name", "")
 
     if not query:
         return HttpResponse("")
@@ -127,6 +132,8 @@ def search_games(request):
     response = requests.get(url)
     data = response.json()
     results = data.get("results", [])
+    for result in results:
+        result['is_following'] = UserGame.objects.filter(user=request.user, game__id=result['id']).exists()
     return render(request, "content/search_results.html", {"results": results})
 #############################################
 @login_required
@@ -141,6 +148,7 @@ def add_game(request): # get the game details from the api using the game id
     if not game:
         # create a new game object and save it to the database
         game = Game(
+            id = result["id"],
             title=result["name"],
             genre=", ".join([g["name"] for g in result["genres"]]),
             platform=", ".join([p["platform"]["name"] for p in result["platforms"]]),
@@ -149,10 +157,31 @@ def add_game(request): # get the game details from the api using the game id
             cover=result["background_image"],
         )
         game.save()
+
+    game_user_searched = Game.objects.get(title=result["name"])
+    qs = UserGame.objects.filter(user=request.user, game= game_user_searched)
+    if qs.exists():
+        qs.delete()
+    else:
+        UserGame.objects.create(user=request.user, game= game_user_searched)
     return render(request, "content/confirmation.html", {"game": game})
 #############################################
 def search_form(request):
     tvshows = TVShow.objects.order_by("-start_date")[:10]
     movies = Movie.objects.order_by("-release_date")[:10]
     games = Game.objects.order_by("-release_date")[:10]
-    return render(request, "content/search_form.html", {"tvshows": tvshows,"movies": movies,"games": games})
+    tvshows_with_follow = []
+    for tvshow in tvshows:
+        is_follow = UserTVShow.objects.filter(user=request.user, tvshow__id=tvshow.id).exists()
+        tvshows_with_follow.append((tvshow, is_follow))
+    movies_with_follow = []
+    for movie in movies:
+        is_follow = UserMovie.objects.filter(user=request.user, movie__id=movie.id).exists()
+        movies_with_follow.append((movie, is_follow))
+    games_with_follow = []
+    for game in games:
+        is_follow = UserGame.objects.filter(user=request.user, game__id=game.id).exists()
+        games_with_follow.append((game, is_follow))
+    # return render(request, "content/search_form.html", {"tvshows": tvshows_with_follow})
+    return render(request, "content/search_form.html", {"tvshows": tvshows_with_follow,"movies": movies_with_follow,"games": games_with_follow})
+ 

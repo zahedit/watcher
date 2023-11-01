@@ -20,11 +20,12 @@
       <div class="card mb-4">
         <img src="http://image.tmdb.org/t/p/w500/{{ result.poster_path }}" class="card-img-top" alt="{{ result.title }}">
         <div class="card-body">
+          <h1>{{ result.name }}</h1>
           <h5 class="card-title">{{ result.title }}</h5>
           <p class="card-text">Release date: {{ result.release_date }}</p>
           <p class="card-text">Overview: {{ result.overview }}</p>
           <p class="card-text">Rating: {{ result.vote_average }}</p>
-          <a href="{% url 'add_tv' %}?id={{ result.id }}">Add to database</a>
+          <a href="{% url 'add_tv' %}?id={{ result.id }}">{% if result.is_following %}"unfollow"{% else %}"follow"{% endif %}</a>
         </div>
       </div>
     </div>

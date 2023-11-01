@@ -158,3 +158,4 @@ class UserUpdateView(UpdateView):
         else:
             # If no, redirect to the login page
             return redirect('auth-login')
+#############################################
