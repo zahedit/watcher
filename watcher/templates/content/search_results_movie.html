@@ -9,8 +9,8 @@
 <div class="container">
   <h1>Search Movies</h1>
   <form action="{% url 'result_movie' %}" method="get">
-    <label for="q">Enter the name of a movie:</label>
-    <input type="text" id="q" name="q" required>
+    <label for="name">Enter the name of a movie:</label>
+    <input type="text" id="name" name="name" required>
     <button type="submit">Search</button>
 </form>
   {% if results %}

@@ -1,15 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Registration</title>
-</head>
-<body>
-    <form action="{{form.action}}" method="post">
-        {% csrf_token %}
-        {{form}}
-        <input type="submit">
+{% include "index/header.html" %}
+{% block content %}
+<aside class="register-section">
+  <div class="section-heading-part">
+      <h3>Sign up to Watcher</h3>
+  </div>
+  <form id="form" action="{{form.action}}" method="post">
+    <table>
+      {% csrf_token %}
+      {{form}}
+    </table>
+    <button class="button light">Submit</button>
     </form>
-</body>
-</html>
+</aside>
+  </div>
+{% endblock %}
+  {% include 'index/footer.html' %}

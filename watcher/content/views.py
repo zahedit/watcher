@@ -27,7 +27,7 @@ def search_movies(request):
         data = response.json()
         results = data["results"]
         for result in results:
-            result['is_following'] = UserMovie.objects.filter(user=request.user, movie__id=result['id']).exists()
+            result['is_following'] = UserMovie.objects.filter(user=request.user.id, movie__id=result['id']).exists()
         return render(request, "content/search_results_movie.html", {"results": results})
     else:
         return HttpResponse("Error: " + str(response.status_code))
@@ -83,8 +83,8 @@ def search_tv(request):
         data = response.json()
         results = data["results"]
         for result in results:
-            result['is_following'] = UserTVShow.objects.filter(user=request.user, tvshow__id=result['id']).exists()
-        return render(request, "content/search_results_tv.html", {"results": results})
+            result['is_following'] = UserTVShow.objects.filter(user=request.user.id, tvshow__id=result['id']).exists()
+        return render(request, "content/result_tvshow.html", {"results": results})
     else:
         return HttpResponse("Error: " + str(response.status_code))
 #############################################
@@ -172,16 +172,16 @@ def search_form(request):
     games = Game.objects.order_by("-release_date")[:10]
     tvshows_with_follow = []
     for tvshow in tvshows:
-        is_follow = UserTVShow.objects.filter(user=request.user, tvshow__id=tvshow.id).exists()
+        is_follow = UserTVShow.objects.filter(user=request.user.id, tvshow__id=tvshow.id).exists()
         tvshows_with_follow.append((tvshow, is_follow))
     movies_with_follow = []
     for movie in movies:
-        is_follow = UserMovie.objects.filter(user=request.user, movie__id=movie.id).exists()
+        is_follow = UserMovie.objects.filter(user=request.user.id, movie__id=movie.id).exists()
         movies_with_follow.append((movie, is_follow))
     games_with_follow = []
     for game in games:
-        is_follow = UserGame.objects.filter(user=request.user, game__id=game.id).exists()
+        is_follow = UserGame.objects.filter(user=request.user.id, game__id=game.id).exists()
         games_with_follow.append((game, is_follow))
     # return render(request, "content/search_form.html", {"tvshows": tvshows_with_follow})
-    return render(request, "content/search_form.html", {"tvshows": tvshows_with_follow,"movies": movies_with_follow,"games": games_with_follow})
+    return render(request, "content/content.html", {"tvshows": tvshows_with_follow,"movies": movies_with_follow,"games": games_with_follow})
  

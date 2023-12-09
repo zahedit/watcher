@@ -25,7 +25,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('auth/', include('user.urls')),
     path('content/', include('content.urls')),
-    path('', TemplateView.as_view(template_name = 'index/home.html'), name='home'),
+    path('', TemplateView.as_view(template_name = 'index/base.html'), name='home'),
     path("u/<str:username>/", ProfileView.as_view(), name="profile"),
     path('account/', UserUpdateView.as_view(), name="account"),
 ]
